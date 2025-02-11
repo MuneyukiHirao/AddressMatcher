@@ -1,3 +1,4 @@
 .env
 customer_data.csv
 result.xlsx
+__pycache__
