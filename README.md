@@ -49,16 +49,16 @@ Place your **`customer_data.csv`** (around 200 rows, for example) in the same di
 
 2. **Create a Virtual Environment (Optional)**
 
-\`\`\`bash
+```bash
 python -m venv venv
 source venv/bin/activate
-\`\`\`
+```
 
 3. **Install Dependencies**
 
-\`\`\`bash
+```bash
 pip install -r requirements.txt
-\`\`\`
+```
 
 Contents of `requirements.txt` might include:
 - `pandas`
@@ -69,10 +69,10 @@ Contents of `requirements.txt` might include:
 
 4. **Set up .env**
 
-\`\`\`bash
+```bash
 # .env
 OPENAI_API_KEY=sk-xxxxxx
-\`\`\`
+```
 
 ---
 
@@ -80,24 +80,24 @@ OPENAI_API_KEY=sk-xxxxxx
 
 ### data_ingestion.py
 
-\`\`\`python
+```python
 def load_customer_data(file_path: str) -> pd.DataFrame:
     """
     Reads a CSV, validates mandatory columns, and returns a DataFrame.
     """
-\`\`\`
+```
 
 - Loads the CSV data.
 - Checks required columns.
 
 ### data_cleaning_formatting.py
 
-\`\`\`python
+```python
 def clean_and_format_data(df: pd.DataFrame) -> pd.DataFrame:
     """
     Cleans up whitespace, unifies casing, and applies simple postal code formatting.
     """
-\`\`\`
+```
 
 - Removes extra whitespace
 - Normalizes City / StateName casing
@@ -105,7 +105,7 @@ def clean_and_format_data(df: pd.DataFrame) -> pd.DataFrame:
 
 ### address_normalization.py
 
-\`\`\`python
+```python
 def normalize_addresses(
     df: pd.DataFrame,
     city_map: dict = None,
@@ -115,14 +115,14 @@ def normalize_addresses(
     """
     Applies dictionary-based normalization of city names, state names, etc.
     """
-\`\`\`
+```
 
 - Dictionary-based string replacements
 - Fixes common abbreviations or alternate spellings
 
 ### preliminary_grouping.py
 
-\`\`\`python
+```python
 def preliminary_grouping(
     df: pd.DataFrame,
     group_cols: List[str] = None,
@@ -131,19 +131,19 @@ def preliminary_grouping(
     """
     Groups by columns (e.g., Country, State, City) and splits large groups into chunks.
     """
-\`\`\`
+```
 
 - Groups by Country / State / City
 - If a group exceeds a certain size, it is split into multiple chunks for easier processing
 
 ### llm_matching.py
 
-\`\`\`python
+```python
 def perform_llm_matching(df: pd.DataFrame) -> pd.DataFrame:
     """
     Calls the LLM (o3-mini) to assign group IDs (G1, G2, etc.) for potential duplicates.
     """
-\`\`\`
+```
 
 - Submits a chunk of address rows to the LLM
 - Expects JSON output with index-to-group mapping
@@ -151,7 +151,7 @@ def perform_llm_matching(df: pd.DataFrame) -> pd.DataFrame:
 
 ### group_id_unifier.py
 
-\`\`\`python
+```python
 def unify_local_group_ids(
     df: pd.DataFrame,
     local_id_col: str = "LLMGroupID",
@@ -162,14 +162,14 @@ def unify_local_group_ids(
     """
     Ensures globally unique group IDs across multiple chunks.
     """
-\`\`\`
+```
 
 - The LLM might reuse "G1" in multiple chunks
 - This module converts each chunk's local IDs to a set of globally unique IDs
 
 ### review_consolidation.py
 
-\`\`\`python
+```python
 def review_and_consolidate(
     df: pd.DataFrame,
     suspicious_threshold: int = 50,
@@ -178,7 +178,7 @@ def review_and_consolidate(
     """
     Flags extremely large groups (>= threshold) or certain edge cases for human review.
     """
-\`\`\`
+```
 
 - Aggregates by group ID
 - Marks suspicious groups with `NeedsReview`
@@ -188,12 +188,12 @@ def review_and_consolidate(
 
 ## End-to-End Execution: run_end_to_end.py
 
-\`\`\`python
+```python
 def run_end_to_end(csv_path: str):
     """
     Conducts the entire flow and exports the final DataFrame as result.xlsx.
     """
-\`\`\`
+```
 
 1. Load CSV (`load_customer_data`)
 2. Clean & format addresses (`clean_and_format_data`), then normalize (`normalize_addresses`)
@@ -205,9 +205,9 @@ def run_end_to_end(csv_path: str):
 
 Example CLI usage:
 
-\`\`\`bash
+```bash
 python run_end_to_end.py
-\`\`\`
+```
 
 Make sure you have an `.env` file containing your API key.
 
@@ -217,9 +217,9 @@ Make sure you have an `.env` file containing your API key.
 
 Use **pytest**:
 
-\`\`\`bash
+```bash
 pytest -v
-\`\`\`
+```
 
 The `tests/` directory contains unit tests for each module. Note that the LLM Matching tests may employ mocks to avoid actual token usage.
 
