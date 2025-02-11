@@ -1,4 +1,4 @@
-```markdown
+
 # AddressMatcher
 
 This project demonstrates how to use a Large Language Model (LLM) to aggregate and unify address data from multiple distributors, ultimately creating a deduplicated customer master. The workflow is organized into the following modules:
